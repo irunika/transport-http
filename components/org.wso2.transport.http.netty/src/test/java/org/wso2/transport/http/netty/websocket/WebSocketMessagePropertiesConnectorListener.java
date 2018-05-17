@@ -48,7 +48,7 @@ public class WebSocketMessagePropertiesConnectorListener implements WebSocketCon
         String checkSubProtocol = initMessage.getHeader("check-sub-protocol");
         Assert.assertEquals(initMessage.getHeader("message-type"), "websocket");
         Assert.assertEquals(initMessage.getHeader("message-sender"), "wso2");
-        if ("true".equals(checkSubProtocol)) {
+        if (Boolean.valueOf(checkSubProtocol)) {
             String[] subProtocols = {"xml"};
             initMessage.handshake(subProtocols, true).setHandshakeListener(new HandshakeListener() {
                 @Override

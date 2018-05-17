@@ -67,6 +67,7 @@ public class WebSocketServerTestCase {
     }
 
     @Test
+    // TODO: handshake test (check convension)
     public void handshakeTest() throws URISyntaxException, SSLException, InterruptedException, ProtocolException {
         WebSocketTestClient primaryClient = new WebSocketTestClient();
         assertTrue(primaryClient.handhshake());
@@ -81,7 +82,9 @@ public class WebSocketServerTestCase {
         String textSent = "test";
         primaryClient.sendText(textSent);
         latch.await(latchCountDownInSecs, TimeUnit.SECONDS);
+
         Assert.assertEquals(primaryClient.getTextReceived(), textSent);
+
         primaryClient.shutDown();
     }
 
@@ -94,24 +97,31 @@ public class WebSocketServerTestCase {
         ByteBuffer bufferSent = ByteBuffer.wrap(bytes);
         primaryClient.sendBinary(bufferSent);
         latch.await(latchCountDownInSecs, TimeUnit.SECONDS);
+
         Assert.assertEquals(primaryClient.getBufferReceived(), bufferSent);
+
         primaryClient.shutDown();
     }
 
     /**
      * Primary client is the one who is checking the connections of the Server.
-     * When secondary server is connecting to the endpoint, message will be sent to the primary
+     * When second client is connecting to the endpoint, message will be sent to the primary
      * client indicating the state of the secondary client.
      */
+    // TODO: (Maybe) Do not need it
     @Test
-    public void testClientConnected() throws InterruptedException, SSLException, URISyntaxException, ProtocolException {
+    public void testClientsConnected() throws InterruptedException, SSLException, URISyntaxException, ProtocolException {
         CountDownLatch latch = new CountDownLatch(1);
+        // TODO: first and second client
+        // TODO: message latch or something
         WebSocketTestClient primaryClient = new WebSocketTestClient(latch);
         WebSocketTestClient secondaryClient = new WebSocketTestClient();
         primaryClient.handhshake();
         secondaryClient.handhshake();
         latch.await(latchCountDownInSecs, TimeUnit.SECONDS);
+
         Assert.assertEquals(primaryClient.getTextReceived(), WebSocketTestConstants.PAYLOAD_NEW_CLIENT_CONNECTED);
+
         secondaryClient.shutDown();
         primaryClient.shutDown();
     }
@@ -121,6 +131,7 @@ public class WebSocketServerTestCase {
      * When secondary server is closing the connection, message will be sent to the primary
      * client indicating the state of the secondary client.
      */
+
     @Test
     public void testClientCloseConnection()
             throws InterruptedException, URISyntaxException, SSLException, ProtocolException {
@@ -136,6 +147,7 @@ public class WebSocketServerTestCase {
     }
 
     @Test
+    // TODO: 2 test cases
     public void testPingPongMessage() throws InterruptedException, IOException, URISyntaxException {
         // Check the ping receive.
         final String ping = "ping";
@@ -145,8 +157,10 @@ public class WebSocketServerTestCase {
         pingCheckClient.sendText(ping);
         pingLatch.await(latchCountDownInSecs, TimeUnit.SECONDS);
         ByteBuffer expectedBuffer = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5});
+
         Assert.assertTrue(pingCheckClient.isPingReceived(), "Should receive a ping from the server");
         Assert.assertEquals(pingCheckClient.getBufferReceived(), expectedBuffer);
+
         pingCheckClient.shutDown();
 
         // Check the pong receive.
@@ -157,16 +171,18 @@ public class WebSocketServerTestCase {
         ByteBuffer bufferSent = ByteBuffer.wrap(bytes);
         pongCheckClient.sendPing(bufferSent);
         pongLatch.await(latchCountDownInSecs, TimeUnit.SECONDS);
+
         Assert.assertTrue(pongCheckClient.isPongReceived(), "Should receive a pong from the server");
         Assert.assertEquals(pongCheckClient.getBufferReceived(), bufferSent);
+
         pongCheckClient.shutDown();
     }
 
-    @Test(priority = 1)
+    @Test(priority = 1) // TODO: Take this out
     public void testIdleTimeout() throws InterruptedException, ProtocolException, SSLException, URISyntaxException {
         // TODO: Fix this. This fails intermittently. Issue #38
         ListenerConfiguration listenerConfiguration = new ListenerConfiguration();
-        listenerConfiguration.setHost("localhost");
+        listenerConfiguration.setHost("localhost"); // Use constants
         listenerConfiguration.setPort(TestUtil.ALTER_INTERFACE_PORT);
         ServerConnector alterServerConnector = httpConnectorFactory.createServerConnector(
                 TestUtil.getDefaultServerBootstrapConfig(),
@@ -174,6 +190,7 @@ public class WebSocketServerTestCase {
         ServerConnectorFuture connectorFuture = alterServerConnector.start();
         WebSocketTestServerConnectorListener listener = new WebSocketTestServerConnectorListener();
         connectorFuture.setWSConnectorListener(listener);
+        // TODO: Remove System.getProperty
         String url = System.getProperty("url", String.format("ws://%s:%d/%s",
                                                              TestUtil.TEST_HOST, TestUtil.ALTER_INTERFACE_PORT,
                                                              "test"));
@@ -181,8 +198,11 @@ public class WebSocketServerTestCase {
         WebSocketTestClient primaryClient = new WebSocketTestClient(url, latch);
         primaryClient.handhshake();
         latch.await(latchCountDownInSecs, TimeUnit.SECONDS);
+
+        // TODO: Assert the close frame
         Assert.assertFalse(primaryClient.isOpen());
         Assert.assertTrue(listener.isIdleTimeout());
+
         alterServerConnector.stop();
     }
 

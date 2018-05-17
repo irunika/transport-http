@@ -62,6 +62,8 @@ public class WebSocketMessagePropertiesTestCase {
     }
 
     @Test
+    // TODO: Test sub protocols and for custom headers x-header
+    // TODO: Two test cases
     public void testProperties() throws InterruptedException, SSLException, URISyntaxException {
         // Testing normal scenarios.
         String subProtocol = "xml, json, xmlx";

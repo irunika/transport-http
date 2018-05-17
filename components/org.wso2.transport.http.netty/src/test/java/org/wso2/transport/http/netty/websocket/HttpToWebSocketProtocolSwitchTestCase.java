@@ -38,6 +38,9 @@ import java.net.URL;
 /**
  * Test cases to check the Protocol switch from HTTP to WebSocket.
  */
+
+// TODO: Revisit test cases. (Tests WebSocket upgrade)
+// TODO: Remove duplicates
 public class HttpToWebSocketProtocolSwitchTestCase {
 
     private DefaultHttpWsConnectorFactory httpConnectorFactory = new DefaultHttpWsConnectorFactory();
@@ -59,6 +62,7 @@ public class HttpToWebSocketProtocolSwitchTestCase {
     }
 
     @Test
+    // Test WebSocket upgrade
     public void testWebSocketGetUpgrade() throws IOException {
         URL url = baseURI.resolve("/websocket").toURL();
         HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
@@ -92,6 +96,7 @@ public class HttpToWebSocketProtocolSwitchTestCase {
     }
 
     @Test
+    // Test WebSocket abnormal upgrade
     public void testWebSocketPostUpgrade() throws IOException {
         URL url = baseURI.resolve("/websocket").toURL();
         HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
