@@ -229,7 +229,8 @@ public final class Constants {
     public static final String HTTP2_TO_HTTP_FALLBACK_HANDLER = "Http2ToHttpFallbackHandler";
     public static final String DECOMPRESSOR_HANDLER = "deCompressor";
     public static final String IDLE_STATE_HANDLER = "idleStateHandler";
-    public static final String HTTP_TRACE_LOG_HANDLER = "http-trace-logger";
+    public static final String HTTP_JAVA_TRACE_LOG_HANDLER = "http-java-trace-logger";
+    public static final String HTTP_CUSTOM_TRACE_LOG_HANDLER = "http-custom-trace-logger";
     public static final String HTTP_ACCESS_LOG_HANDLER = "http-access-logger";
     public static final String WEBSOCKET_SERVER_HANDSHAKE_HANDLER = "websocket-server-handshake-handler";
     public static final String WEBSOCKET_CLIENT_HANDSHAKE_HANDLER = "websocket-client-handshake-handler";

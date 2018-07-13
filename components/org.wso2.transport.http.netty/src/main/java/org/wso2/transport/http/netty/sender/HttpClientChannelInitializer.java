@@ -248,7 +248,7 @@ public class HttpClientChannelInitializer extends ChannelInitializer<SocketChann
     private void addCommonHandlers(ChannelPipeline pipeline) {
         pipeline.addLast(Constants.DECOMPRESSOR_HANDLER, new HttpContentDecompressor());
         if (httpTraceLogEnabled) {
-            pipeline.addLast(Constants.HTTP_TRACE_LOG_HANDLER,
+            pipeline.addLast(Constants.HTTP_JAVA_TRACE_LOG_HANDLER,
                     new HTTPTraceLoggingHandler(Constants.TRACE_LOG_UPSTREAM));
         }
     }

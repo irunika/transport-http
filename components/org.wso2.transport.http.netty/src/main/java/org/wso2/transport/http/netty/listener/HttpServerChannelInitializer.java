@@ -28,6 +28,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler;
 import io.netty.handler.codec.http2.Http2CodecUtil;
 import io.netty.handler.codec.http2.Http2ServerUpgradeCodec;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.ApplicationProtocolNames;
 import io.netty.handler.ssl.ApplicationProtocolNegotiationHandler;
 import io.netty.handler.ssl.OpenSsl;
@@ -63,7 +64,8 @@ import javax.net.ssl.SSLEngine;
 
 import static org.wso2.transport.http.netty.common.Constants.ACCESS_LOG;
 import static org.wso2.transport.http.netty.common.Constants.HTTP_ACCESS_LOG_HANDLER;
-import static org.wso2.transport.http.netty.common.Constants.HTTP_TRACE_LOG_HANDLER;
+import static org.wso2.transport.http.netty.common.Constants.HTTP_CUSTOM_TRACE_LOG_HANDLER;
+import static org.wso2.transport.http.netty.common.Constants.HTTP_JAVA_TRACE_LOG_HANDLER;
 import static org.wso2.transport.http.netty.common.Constants.TRACE_LOG_DOWNSTREAM;
 
 /**
@@ -89,6 +91,7 @@ public class HttpServerChannelInitializer extends ChannelInitializer<SocketChann
     private int cacheSize;
     private ChannelGroup allChannels;
     private boolean ocspStaplingEnabled = false;
+    private LoggingHandler customLoggingHandler;
 
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
@@ -185,8 +188,13 @@ public class HttpServerChannelInitializer extends ChannelInitializer<SocketChann
             serverPipeline.addLast(Constants.HTTP_CHUNK_WRITER, new ChunkedWriteHandler());
 
             if (httpTraceLogEnabled) {
-                serverPipeline.addLast(HTTP_TRACE_LOG_HANDLER, new HTTPTraceLoggingHandler(TRACE_LOG_DOWNSTREAM));
+                serverPipeline.addLast(HTTP_JAVA_TRACE_LOG_HANDLER, new HTTPTraceLoggingHandler(TRACE_LOG_DOWNSTREAM));
             }
+
+            if (customLoggingHandler != null) {
+                serverPipeline.addLast(HTTP_CUSTOM_TRACE_LOG_HANDLER, customLoggingHandler);
+            }
+
             if (httpAccessLogEnabled) {
                 serverPipeline.addLast(HTTP_ACCESS_LOG_HANDLER, new HttpAccessLoggingHandler(ACCESS_LOG));
             }
@@ -236,8 +244,10 @@ public class HttpServerChannelInitializer extends ChannelInitializer<SocketChann
         pipeline.addLast(Constants.HTTP_SERVER_CODEC, sourceCodec);
         pipeline.addLast(Constants.HTTP_COMPRESSOR, new CustomHttpContentCompressor());
         if (httpTraceLogEnabled) {
-            pipeline.addLast(HTTP_TRACE_LOG_HANDLER,
-                             new HTTPTraceLoggingHandler(TRACE_LOG_DOWNSTREAM));
+            pipeline.addLast(HTTP_JAVA_TRACE_LOG_HANDLER, new HTTPTraceLoggingHandler(TRACE_LOG_DOWNSTREAM));
+        }
+        if (customLoggingHandler != null) {
+            pipeline.addLast(HTTP_CUSTOM_TRACE_LOG_HANDLER, customLoggingHandler);
         }
         if (httpAccessLogEnabled) {
             pipeline.addLast(HTTP_ACCESS_LOG_HANDLER, new HttpAccessLoggingHandler(ACCESS_LOG));
@@ -260,6 +270,10 @@ public class HttpServerChannelInitializer extends ChannelInitializer<SocketChann
 
     void setHttpTraceLogEnabled(boolean httpTraceLogEnabled) {
         this.httpTraceLogEnabled = httpTraceLogEnabled;
+    }
+
+    void setCustomLoggingHandler(LoggingHandler customLoggingHandler) {
+        this.customLoggingHandler = customLoggingHandler;
     }
 
     void setHttpAccessLogEnabled(boolean httpAccessLogEnabled) {

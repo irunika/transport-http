@@ -18,23 +18,17 @@
  */
 package org.wso2.transport.http.netty.config;
 
+import io.netty.handler.logging.LoggingHandler;
 import org.wso2.transport.http.netty.common.Util;
 import org.wso2.transport.http.netty.common.ssl.SSLConfig;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 
 /**
  * JAXB representation of a transport listener.
  */
-@SuppressWarnings("unused")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class ListenerConfiguration {
 
     public static final String DEFAULT_KEY = "default";
@@ -46,84 +40,34 @@ public class ListenerConfiguration {
         return defaultConfig;
     }
 
-    @XmlAttribute(required = true)
     private String id = DEFAULT_KEY;
-
-    @XmlAttribute
     private String host = "0.0.0.0";
-
-    @XmlAttribute(required = true)
     private int port = 9090;
-
     private ChunkConfig chunkingConfig = ChunkConfig.AUTO;
-
     private KeepAliveConfig keepAliveConfig = KeepAliveConfig.AUTO;
-
-    @XmlAttribute
     private boolean bindOnStartup = false;
-
-    @XmlAttribute
     private String scheme = "http";
-
-    @XmlAttribute
     private String version = "1.1";
-
-    @XmlAttribute
     private String keyStoreFile;
-
-    @XmlAttribute
     private String keyStorePassword;
-
-    @XmlAttribute
     private String trustStoreFile;
-
-    @XmlAttribute
     private String trustStorePass;
-
-    @XmlAttribute
     private String certPass;
-
-    @XmlAttribute
     private long socketIdleTimeout;
-
-    @XmlAttribute
     private String messageProcessorId;
-
-    @XmlAttribute
-    private boolean httpTraceLogEnabled;
-
-    @XmlAttribute
+    private boolean httpJavaTraceLogEnabled;
     private boolean httpAccessLogEnabled;
-
-    @XmlAttribute
     private String verifyClient;
-
-    @XmlAttribute
     private String sslProtocol;
-
-    @XmlAttribute
     private String tlsStoreType;
-
-    @XmlAttribute
     private String serverHeader = "wso2-http-transport";
-
-    @XmlAttribute
     private boolean validateCertEnabled;
-
-    @XmlAttribute
     private int cacheSize = 50;
-
-    @XmlAttribute
     private int cacheValidityPeriod = 15;
-
-    @XmlAttribute
     private boolean ocspStaplingEnabled = false;
-
-    @XmlElementWrapper(name = "parameters")
-    @XmlElement(name = "parameter")
     private List<Parameter> parameters = getDefaultParameters();
-
     private RequestSizeValidationConfig requestSizeValidationConfig = new RequestSizeValidationConfig();
+    private LoggingHandler customLoggingHandler;
 
     public ListenerConfiguration() {
     }
@@ -309,12 +253,20 @@ public class ListenerConfiguration {
         this.socketIdleTimeout = socketIdleTimeout;
     }
 
-    public boolean isHttpTraceLogEnabled() {
-        return httpTraceLogEnabled;
+    public LoggingHandler getCustomLoggingHandler() {
+        return customLoggingHandler;
     }
 
-    public void setHttpTraceLogEnabled(boolean httpTraceLogEnabled) {
-        this.httpTraceLogEnabled = httpTraceLogEnabled;
+    public void setCustomLoggingHandler(LoggingHandler customLoggingHandler) {
+        this.customLoggingHandler = customLoggingHandler;
+    }
+
+    public boolean isHttpJavaTraceLogEnabled() {
+        return httpJavaTraceLogEnabled;
+    }
+
+    public void setHttpJavaTraceLogEnabled(boolean httpJavaTraceLogEnabled) {
+        this.httpJavaTraceLogEnabled = httpJavaTraceLogEnabled;
     }
 
     public boolean isHttpAccessLogEnabled() {

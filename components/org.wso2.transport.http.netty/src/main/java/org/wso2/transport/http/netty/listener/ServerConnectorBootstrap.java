@@ -24,6 +24,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LoggingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.transport.http.netty.common.Util;
@@ -142,6 +143,10 @@ public class ServerConnectorBootstrap {
 
     public void addHttpTraceLogHandler(Boolean isHttpTraceLogEnabled) {
         httpServerChannelInitializer.setHttpTraceLogEnabled(isHttpTraceLogEnabled);
+    }
+
+    public void setCustomHttpTraceLogHandler(LoggingHandler customHttpTraceLogHandler) {
+        httpServerChannelInitializer.setCustomLoggingHandler(customHttpTraceLogHandler);
     }
 
     public void addHttpAccessLogHandler(Boolean isHttpAccessLogEnabled) {

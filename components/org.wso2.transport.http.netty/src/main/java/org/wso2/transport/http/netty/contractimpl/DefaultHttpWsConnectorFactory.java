@@ -76,7 +76,8 @@ public class DefaultHttpWsConnectorFactory implements HttpWsConnectorFactory {
         if (Constants.HTTP_2_0 == Float.valueOf(listenerConfig.getVersion())) {
             serverConnectorBootstrap.setHttp2Enabled(true);
         }
-        serverConnectorBootstrap.addHttpTraceLogHandler(listenerConfig.isHttpTraceLogEnabled());
+        serverConnectorBootstrap.addHttpTraceLogHandler(listenerConfig.isHttpJavaTraceLogEnabled());
+        serverConnectorBootstrap.setCustomHttpTraceLogHandler(listenerConfig.getCustomLoggingHandler());
         serverConnectorBootstrap.addHttpAccessLogHandler(listenerConfig.isHttpAccessLogEnabled());
         serverConnectorBootstrap.addThreadPools(bossGroup, workerGroup);
         serverConnectorBootstrap.addHeaderAndEntitySizeValidation(listenerConfig.getRequestSizeValidationConfig());

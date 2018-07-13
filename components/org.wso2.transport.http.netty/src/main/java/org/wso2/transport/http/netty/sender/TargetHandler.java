@@ -200,7 +200,7 @@ public class TargetHandler extends ChannelInboundHandlerAdapter {
 
         // Remove Http specific handlers
         safelyRemoveHandlers(targetChannel.getChannel().pipeline(), Constants.IDLE_STATE_HANDLER,
-                Constants.HTTP_TRACE_LOG_HANDLER);
+                Constants.HTTP_JAVA_TRACE_LOG_HANDLER);
         http2ClientChannel.addDataEventListener(
                 Constants.IDLE_STATE_HANDLER,
                 new TimeoutHandler(http2ClientChannel.getSocketIdleTimeout(), http2ClientChannel));

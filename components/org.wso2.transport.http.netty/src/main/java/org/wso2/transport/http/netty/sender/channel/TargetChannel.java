@@ -171,9 +171,9 @@ public class TargetChannel {
     public void setCorrelationIdForLogging() {
         ChannelPipeline pipeline = this.getChannel().pipeline();
         SourceHandler srcHandler = this.getCorrelatedSource();
-        if (srcHandler != null && pipeline.get(Constants.HTTP_TRACE_LOG_HANDLER) != null) {
+        if (srcHandler != null && pipeline.get(Constants.HTTP_JAVA_TRACE_LOG_HANDLER) != null) {
             HTTPTraceLoggingHandler loggingHandler = (HTTPTraceLoggingHandler)
-                    pipeline.get(Constants.HTTP_TRACE_LOG_HANDLER);
+                    pipeline.get(Constants.HTTP_JAVA_TRACE_LOG_HANDLER);
             loggingHandler.setCorrelatedSourceId(srcHandler.getInboundChannelContext().channel().id().asShortText());
         }
     }
